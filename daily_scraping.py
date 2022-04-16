@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import time
 
-
-os.chdir("/scripts")
+if os.path.exists("/scripts"):
+    os.chdir("/scripts")
 
 if os.path.exists(".env"):
     load_dotenv()
@@ -29,8 +29,8 @@ data = {
 for line in open("scraping_map.txt"):
     locale = line.split(" ")[0].rstrip()
     crimes_file = line.split(" ")[1].rstrip()
-    data["search_from"] = datetime.today().strftime('%Y-%m-%d')
-    data["search_to"] = (datetime.strptime(data["search_from"], '%Y-%m-%d') + timedelta(days=1)).strftime('%Y-%m-%d')
+    data["search_to"] = datetime.today().strftime('%Y-%m-%d')
+    data["search_from"] = (datetime.strptime(data["search_to"], '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
     data["locale"] = locale
     data["crimes_file"] = crimes_file
     response = requests.post(SCRAPER_URL, data=data, auth=(SCRAPER_LOGIN, SCRAPER_PASSWORD))
